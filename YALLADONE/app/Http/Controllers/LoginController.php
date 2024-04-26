@@ -68,7 +68,11 @@ class LoginController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // Retrieve the user data based on the provided ID
+        $users = users::findOrFail($id);
+        
+        // Return the personDescription view with the retrieved user data
+        return view('userDescription', ['user' => $users]);
     }
 
     /**
@@ -76,15 +80,27 @@ class LoginController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $data= users::find($id);
+        return view('edituser')->with('user',$data);
     }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        //
+        $obj= users::find($id);
+
+        $obj->user_name = $request->user_name;
+        $obj->user_lastname = $request->user_lastname;
+        $obj->email = $request->email;
+        $obj->age = $request->age;
+        $obj->phone_number = $request->phone_number;
+        $obj->password = $request->password; 
+        $obj->save();
+
+        return redirect()->route('');
     }
 
     /**
@@ -92,6 +108,8 @@ class LoginController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+       $obj = users::find($id);
+       $obj->delete(); 
+       return redirect()->route('');
     }
 }
