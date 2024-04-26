@@ -23,3 +23,5 @@ Route::get('index',[Controller::class,'index']);
 
 Route::resource('index',LoginController::class);
 Route::get('user',[LoginController::class,'index']);
+
+Route::resource('store',LoginController::class);

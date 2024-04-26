@@ -29,7 +29,7 @@ class LoginController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -37,7 +37,30 @@ class LoginController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'user_name' => 'required|string|max:255',
+            'user_lastname' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'age' => 'nullable|integer|min:18', 
+            'phone_number' => 'nullable|string|max:20|unique:users,phone_number',
+            'password' => 'required|string|min:8',
+        ]);
+        
+        
+        // Encrypt the password
+        $encryptedPassword = bcrypt($request->password);
+    
+        // Proceed with saving the record
+        $obj = new users();
+        $obj->user_name = $request->user_name;
+        $obj->user_lastname = $request->user_lastname;
+        $obj->email = $request->email;
+        $obj->age = $request->age;
+        $obj->phone_number = $request->phone_number;
+        $obj->password = $encryptedPassword; // Save encrypted password
+        $obj->save();
+    
+        return "Welcome $obj->user_name $obj->user_lastname";
     }
 
     /**
