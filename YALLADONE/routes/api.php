@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\LoginApiContoller;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +19,21 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+
+Route::post('store', [LoginController::class, 'store']);
+Route::resource('user',LoginController::class);
+
+Route::resource('login',LoginApiContoller::class);
+Route::post('login/store', [LoginApiContoller::class,'store']);
+
+
+//route for validating user login 
+Route::middleware('auth')->group(function () {
+Route::post('/ValidateLogin', [LoginApiContoller::class, 'login']);
+   
+});
+
+//return all the services in the db 
+Route::get('/getAllServices', [LoginApiContoller::class, 'getAllServices'])->name('getAllServices');
