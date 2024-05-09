@@ -19,7 +19,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('index',[Controller::class,'index']);
+// Route::get('index',[Controller::class,'index']);
 
-Route::resource('index',LoginController::class);
-Route::get('user',[LoginController::class,'index']);
+// Route::resource('index',LoginController::class);
+// Route::get('user',[LoginController::class,'index']);
+
+// Route::post('newuser',[LoginController::class,'store']);
