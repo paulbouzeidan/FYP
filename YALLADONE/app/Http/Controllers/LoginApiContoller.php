@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\user_points;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\User;
 use App\Models\services;
 
 class LoginApiContoller extends Controller
@@ -51,7 +51,7 @@ class LoginApiContoller extends Controller
             'age' => 'nullable|integer|min:18',
             'phone_number' => 'nullable|string|max:20|unique:users,phone_number',
             'password' => 'required|string|min:8',
-            
+
         ]);
 
         // Encrypt the password
@@ -105,6 +105,9 @@ class LoginApiContoller extends Controller
         //
     }
 
+
+
+
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -128,21 +131,24 @@ class LoginApiContoller extends Controller
 
         // If user is found, attempt login
         if ($user && Auth::attempt(['email' => $user->email, 'password' => $credentials['password']])) {
-            $token = $user->createToken('MyApp')->accessToken;
+            $token = $user->createToken('MyApp')->plainTextToken;
             return response()->json(['user' => $user, 'access_token' => $token]);
+        } else {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
-
-        
-}
+    }
 
 
-public function getAllServices()
+
+    public function getAllServices()
     {
         // Fetch all services from the database
         $services = services::all();
 
         // Return the services as a JSON response
-        return response()->json(['services' => $services], 200);
+        return response()->json($services, 200);
+        // return ['services' => $services];
+
     }
-    
+
 }

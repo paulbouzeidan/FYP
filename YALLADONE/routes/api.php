@@ -28,10 +28,10 @@ Route::resource('user',LoginController::class);
 Route::resource('login',LoginApiContoller::class);
 Route::post('login/store', [LoginApiContoller::class,'store']);
 
-
+Route::post('/ValidateLogin', [LoginApiContoller::class, 'login']);
 //route for validating user login 
 Route::middleware('auth')->group(function () {
-Route::post('/ValidateLogin', [LoginApiContoller::class, 'login']);
+
    
 });
 
