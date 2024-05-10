@@ -28,12 +28,23 @@ Route::resource('user',LoginController::class);
 Route::resource('login',LoginApiContoller::class);
 Route::post('login/store', [LoginApiContoller::class,'store']);
 
-Route::post('/ValidateLogin', [LoginApiContoller::class, 'login']);
+// Route::post('/ValidateLogin', [LoginApiContoller::class, 'login']);
 //route for validating user login 
-Route::middleware('auth')->group(function () {
+// Route::middleware('auth')->group(function () {
+ 
+Route::post('/ValidateLogin', [LoginApiContoller::class, 'login']);
 
+
+
+// });
+Route::middleware('auth')->group(function () {
    
 });
-
 //return all the services in the db 
 Route::get('/getAllServices', [LoginApiContoller::class, 'getAllServices'])->name('getAllServices');
+
+
+// Route::put('/changePassword', [LoginApiContoller::class, 'changePassword'])->name('changePassword');
+Route::put('/changepassword', [LoginApiContoller::class, 'changepassword']);
+
+Route::put('/changeUserInfo', [LoginApiContoller::class, 'changeUserInfo']);

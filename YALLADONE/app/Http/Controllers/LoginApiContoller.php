@@ -151,4 +151,69 @@ class LoginApiContoller extends Controller
 
     }
 
+    public function changepassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+            'password' => 'required',
+            'new_password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        $credentials = $request->only('email', 'password');
+
+        // Attempt to find the user by email
+        $user = users::where('email', $credentials['email'])->first();
+
+
+        // If user is found, attempt login
+        if ($user && Auth::attempt(['email' => $user->email, 'password' => $credentials['password']])) {
+
+            $user->password = bcrypt($request->input('new_password'));
+            $user->save();
+
+            $token = $user->createToken('MyApp')->plainTextToken;
+            return response()->json(['user' => $user, 'access_token' => $token]);
+        } else {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+    }
+
+
+    public function changeUserInfo(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_name' => 'required',
+            'user_lastname' => 'required',
+            'email' => 'required',
+            'phone_number' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        // Find the user by email
+        $user = users::where('email', $request->input('email'))->first();
+
+        if ($user) {
+            $user->user_name = $request->input('user_name');
+            $user->user_lastname = $request->input('user_lastname');
+            $user->email = $request->input('email');
+            $user->phone_number = $request->input('phone_number');
+
+            $user->save();
+
+            // Generate a new token if needed
+            // $token = $user->createToken('MyApp')->plainTextToken;
+            return response()->json(['user' => $user]);
+        } else {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+    }
+
+
 }
