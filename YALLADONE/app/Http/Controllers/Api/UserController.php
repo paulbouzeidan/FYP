@@ -26,7 +26,7 @@ class UserController extends Controller
             [
                 'user_name' => 'required',
                 'user_lastname'=>'required',
-                'age'=>'required',
+                'birthday'=>'required',
                 'phone_number'=>'required',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required'
@@ -43,7 +43,7 @@ class UserController extends Controller
             $user = users::create([
                 'user_name' => $request->user_name,
                 'user_lastname' => $request->user_lastname,
-                'age' => $request->age,
+                'birthday' => $request->birthday,
                 'phone_number' => $request->phone_number,
                 'email' => $request->email,
                 'password' => Hash::make($request->password)

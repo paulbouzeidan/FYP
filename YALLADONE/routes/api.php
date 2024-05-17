@@ -25,3 +25,5 @@ Route::group([
     Route::get("profile",[UserController::class, 'profile']);
     Route::get("logout",[UserController::class, 'logout']);
 });
+
+Route::get('/getAllServices', [LoginApiContoller::class, 'getAllServices']);

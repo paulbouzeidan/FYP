@@ -14,6 +14,8 @@ class users extends Authenticatable
 
     protected $primaryKey = 'Users_id';
 
+  
+
     public function getUserPoints()
     {
         return $this->hasOne(user_points::class, 'id');
@@ -43,7 +45,7 @@ class users extends Authenticatable
 
         'user_name',
         'user_lastname',
-        'age',
+        'birthday',
         'phone_number',
         'email',
         'password',
