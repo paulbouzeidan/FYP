@@ -2,8 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\LoginApiContoller;
+use App\Http\Controllers\Api\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,24 +15,13 @@ use App\Http\Controllers\LoginApiContoller;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('/auth/register', [UserController::class, 'createUser']);
+Route::post('/auth/login', [UserController::class, 'loginUser']);
+
+Route::group([
+    "middleware" => ["auth:sanctum"]
+],function(){
+
+    Route::get("profile",[UserController::class, 'profile']);
+    Route::get("logout",[UserController::class, 'logout']);
 });
-
-
-
-Route::post('store', [LoginController::class, 'store']);
-Route::resource('user',LoginController::class);
-
-Route::resource('login',LoginApiContoller::class);
-Route::post('login/store', [LoginApiContoller::class,'store']);
-
-Route::post('/ValidateLogin', [LoginApiContoller::class, 'login']);
-//route for validating user login 
-Route::middleware('auth')->group(function () {
-
-   
-});
-
-//return all the services in the db 
-Route::get('/getAllServices', [LoginApiContoller::class, 'getAllServices'])->name('getAllServices');

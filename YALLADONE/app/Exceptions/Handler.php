@@ -27,4 +27,42 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render ($request, Throwable $exception)
+    {
+        if($exception instanceof HttpException){
+        $code=$exception->getStatusCode();
+        $message=Response::$statusTexts[$code];
+        return $this->errorResponse($message, $code);
+        }
+
+        if($exception instanceof ModelNotFoundException){
+        $model = strtolower (class_basename($exception->getModel()));
+        return $this->errorResponse("Does not exist any instaes of {$model} with given id",Response::HTTP_NOT_FOUND) ;
+        }
+
+        if ($exception instanceof AuthorizationException){
+            return $this->errorResponse($exception->getMessage(),Response::HTTP_FORBIDDEN);
+        }
+       
+
+        if($exception instanceof AuthenticationException){
+        return $this->errorResponse($exception->getMessage(), Response::HTTP_UNAUTHORIZED);
+        }
+
+        if($exception instanceof ValidationException){
+            $error=$exception->validator->errors()->getMessages();
+            return $this->errorResponse($error, Response:: HTTP_UNPROCESSABLE_ENTITY);
+        }
+        
+
+        if(env( 'APP_DEBUG', false)){
+        $this->errorResponse( ' Unexpected error, try later',  Response::HTTP_INTERNAL_SERVER_ERROR);
+
+}
+
+
+    }
+
+    
 }
