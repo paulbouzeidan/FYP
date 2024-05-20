@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\LoginApiContoller;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,4 +27,4 @@ Route::group([
     Route::get("logout",[UserController::class, 'logout']);
 });
 
-Route::get('/getAllServices', [LoginApiContoller::class, 'getAllServices']);
+Route::get('/getAllServices', [UserController::class, 'getAllServices']);

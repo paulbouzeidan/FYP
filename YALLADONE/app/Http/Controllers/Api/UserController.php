@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\users;
+use App\Models\services;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -14,15 +15,15 @@ class UserController extends Controller
     /**
      * Create User
      * @param Request $request
-     * @return users 
+     * @return users
      */
     public function createUser(Request $request)
     {
 
-       
+
         try {
             //Validated
-            $validateUser = Validator::make($request->all(), 
+            $validateUser = Validator::make($request->all(),
             [
                 'user_name' => 'required',
                 'user_lastname'=>'required',
@@ -75,7 +76,7 @@ class UserController extends Controller
                 'identifier' => 'required',
                 'password' => 'required'
             ]);
-    
+
             if ($validateUser->fails()) {
                 return response()->json([
                     'status' => false,
@@ -83,29 +84,29 @@ class UserController extends Controller
                     'errors' => $validateUser->errors()
                 ], 401);
             }
-    
+
             $credentials = $request->only('identifier', 'password');
-    
+
             // Check if the identifier is an email or a phone number
             $identifier = $credentials['identifier'];
             $user = users::where(function ($query) use ($identifier) {
                 $query->where('email', $identifier)
                     ->orWhere('phone_number', $identifier);
             })->first();
-    
+
             if (!$user || !Auth::attempt(['email' => $user->email, 'password' => $credentials['password']])) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Email/Phone Number & Password do not match with our records.',
                 ], 401);
             }
-    
+
             return response()->json([
                 'status' => true,
                 'message' => 'User Logged In Successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken
             ], 200);
-    
+
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -131,9 +132,21 @@ class UserController extends Controller
             'status' => true,
             'message' => 'User Logged out ',
             'data' => [],
-           
+
         ], 200);
     }
 
-   
+    public function getAllServices()
+    {
+        // Fetch all services from the database
+        $services = services::all();
+
+        // Return the services as a JSON response
+        return response()->json($services, 200);
+        // return ['services' => $services];
+
+    }
+
+
+
 }
