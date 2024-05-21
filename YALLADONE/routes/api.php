@@ -25,6 +25,10 @@ Route::group([
 
     Route::get("profile",[UserController::class, 'profile']);
     Route::get("logout",[UserController::class, 'logout']);
+
+    Route::put("/profile/updateUser",[UserController::class, 'updateUser']);
+
+
 });
 
 Route::get('/getAllServices', [UserController::class, 'getAllServices']);

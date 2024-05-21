@@ -126,6 +126,53 @@ class UserController extends Controller
 
     }
 
+    public function updateUser(Request $request)
+{
+    try {
+        $user = auth()->user();
+
+        //Validated
+        $validateUser = Validator::make($request->all(), [
+            'user_name' => 'required',
+            'user_lastname'=>'required',
+            'birthday'=>'required',
+            'phone_number'=>'required',
+            'email' => 'required|email|'.$user->id,
+        ]);
+
+        if($validateUser->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validateUser->errors()
+            ], 401);
+        }
+
+        $user->update([
+            'user_name' => $request->user_name,
+            'user_lastname' => $request->user_lastname,
+            'birthday' => $request->birthday,
+            'phone_number' => $request->phone_number,
+            'email' => $request->email,
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'User Updated Successfully',
+            'data' => $user
+        ], 200);
+
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => false,
+            'message' => $th->getMessage()
+        ], 500);
+    }
+}
+
+
+
+
     public function logout(){
         auth()->user()->tokens()->delete();
         return response()->json([
