@@ -18,8 +18,10 @@ class address extends Model
 
     protected $fillable = [
 
+        'longitude',
+        'latitude',
         'user_id',
-        'APILocation',
+
         'location_type',
         'name',
         'district',

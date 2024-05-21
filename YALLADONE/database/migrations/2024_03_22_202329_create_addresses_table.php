@@ -16,7 +16,8 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreignId('user_id')->references('Users_id')->on('users')->onDelete('cascade');
-            $table->string('APILocation')->nullable();
+            $table->string('longitude')->nullable();
+            $table->string('latitude')->nullable();
             $table->string('location_type')->nullable();
             $table->string('name')->nullable();
             $table->string('district')->nullable();

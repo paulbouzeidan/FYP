@@ -272,9 +272,11 @@ public function CreateUserLocation(Request $request)
         $user = auth()->user();
         $ip = auth()->user()->Users_id;
 
+
         // Validation rules for location data
         $validateLocation = Validator::make($request->all(), [
-            'APILocation' => 'required',
+            'longitude' => 'required',
+            'latitude' => 'required',
             'location_type' => 'required|string',
             'name' => 'required|string',
             'district' => 'required|string',
@@ -296,7 +298,8 @@ public function CreateUserLocation(Request $request)
         // Create new address record
         $address = address::create([
             'user_id' => $ip,
-            'APILocation' => $request->APILocation,
+            'longitude' => $request->longitude,
+            'latitude' => $request->latitude,
             'location_type' => $request->location_type,
             'name' => $request->name,
             'district' => $request->district,
@@ -324,14 +327,18 @@ public function CreateUserLocation(Request $request)
 
 public function UpdateUserLocation(Request $request, $location_id)
 {
+
     try {
         $user = auth()->user();
         // Find the location by ID
         $location = address::where('address_id', $location_id)->where('user_id', $user->Users_id)->firstOrFail();
 
+
+
         // Validation rules for location data
         $validateLocation = Validator::make($request->all(), [
-            'APILocation' => 'required',
+            'longitude' => 'required',
+            'latitude' => 'required',
             'location_type' => 'required|string',
             'name' => 'required|string',
             'district' => 'required|string',
@@ -352,7 +359,8 @@ public function UpdateUserLocation(Request $request, $location_id)
 
         // Update location data
         $location->update([
-            'APILocation' => $request->APILocation,
+            'longitude' => $request->longitude,
+            'latitude' => $request->latitude,
             'location_type' => $request->location_type,
             'name' => $request->name,
             'district' => $request->district,
