@@ -249,11 +249,7 @@ public function updatePassword(Request $request)
 
         $locations = $user->getUserAddress;
 
-        return response()->json([
-            'status' => true,
-            'message' => 'User locations retrieved successfully',
-            'data' => $locations,
-        ], 200);
+        return response()->json($locations, 200);
 
     } catch (\Throwable $th) {
         return response()->json([
