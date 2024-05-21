@@ -20,7 +20,7 @@ class UsersTableSeeder  extends Seeder
             'user_name' => 'Paul',
             'user_lastname' => 'abz',
             'email' => 'Paulabz@gmail.com',
-            'age' => 30,
+            'birthday' => '2004-10-21',
             'phone_number' => '71717171',
             'password' => bcrypt('Qwerty1234'), // Use Laravel's bcrypt function to hash the password
             'created_at' => now(),
@@ -30,7 +30,7 @@ class UsersTableSeeder  extends Seeder
             'user_name' => 'Sergio',
             'user_lastname' => 'berberian',
             'email' => 'sergioberberian2001@gmail.com',
-            'age' => 23,
+            'birthday' => '2001-04-09',
             'phone_number' => '81384086',
             'password' => bcrypt('Qwerty1234'), // Use Laravel's bcrypt function to hash the password
             'created_at' => now(),
@@ -38,5 +38,5 @@ class UsersTableSeeder  extends Seeder
         ]);
 
         // You can add more dummy data as needed
-    }
+}
 }
