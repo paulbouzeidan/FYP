@@ -14,7 +14,7 @@ class users extends Authenticatable
 
     protected $primaryKey = 'Users_id';
 
-  
+
 
     public function getUserPoints()
     {
@@ -33,13 +33,9 @@ class users extends Authenticatable
 
     public function getUserAddress()
     {
-        return $this->belongsToMany(
-            address::class,
-            'useraddress',
-            'Users_id',
-            'address_id'
-        );
+        return $this->hasMany(address::class, 'user_id', 'Users_id');
     }
+
 
     protected $fillable = [
 
@@ -49,6 +45,7 @@ class users extends Authenticatable
         'phone_number',
         'email',
         'password',
+
     ];
 
     /**

@@ -25,8 +25,15 @@ Route::group([
 
     Route::get("profile",[UserController::class, 'profile']);
     Route::get("logout",[UserController::class, 'logout']);
+    Route::get("UserLocations",[UserController::class, 'getUserLocations']);
+
 
     Route::put("/profile/updateUser",[UserController::class, 'updateUser']);
+    Route::put("/updatePassword",[UserController::class, 'updatePassword']);
+    Route::put('/UpdateUserLocation/{location_id}', [UserController::class, 'UpdateUserLocation']);
+
+    Route::post('createUserLocation', [UserController::class, 'CreateUserLocation']);
+
 
 
 });

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreignId('user_id')->references('Users_id')->on('users')->onDelete('cascade');
-            $table->string('APILocation');
+            $table->string('APILocation')->nullable();
             $table->string('location_type')->nullable();
             $table->string('name')->nullable();
             $table->string('district')->nullable();
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('street')->nullable();
             $table->string('building')->nullable();
             $table->string('floor')->nullable();
-            $table->string('additional_info');
+            $table->string('additional_info')->nullable();
         });
     }
 
@@ -36,3 +36,5 @@ return new class extends Migration
         Schema::dropIfExists('addresses');
     }
 };
+
+
