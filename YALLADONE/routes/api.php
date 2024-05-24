@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\sendEmail;
 
 
 /*
@@ -19,6 +21,9 @@ use App\Http\Controllers\Api\UserController;
 Route::post('/auth/register', [UserController::class, 'createUser']);
 Route::post('/auth/login', [UserController::class, 'loginUser']);
 
+Route::get('/getAllServices', [UserController::class, 'getAllServices']);
+Route::get('/getNews', [NewsController::class, 'getNews']);
+
 Route::group([
     "middleware" => ["auth:sanctum"]
 ],function(){
@@ -34,10 +39,17 @@ Route::group([
 
     Route::post('createUserLocation', [UserController::class, 'CreateUserLocation']);
 
+    Route::post('/send',[sendEmail::class,'send'])->middleware('auth');
+
+    Route::post('/YallaDoneSend',[sendEmail::class,'YallaDoneSend']);
+
+    Route::delete('/UpdateUserLocation/{id}', [UserController::class, 'DestroyUserLocation']);
+
+    Route::delete('/DestroyUser', [UserController::class, 'DestroyUser']);
 
 
 });
 
-Route::get('/getAllServices', [UserController::class, 'getAllServices']);
+
 
 

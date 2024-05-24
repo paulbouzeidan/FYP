@@ -229,6 +229,37 @@ public function updatePassword(Request $request)
         ], 200);
     }
 
+    public function DestroyUser(Request $request)
+{
+    try {
+        // Retrieve the authenticated user
+        $user = auth()->user();
+
+        $userid=$user->Users_id;
+
+        if ( $userid) {
+
+            $user->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'user deleted successfully'
+            ], 200);
+        } else {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'user not found !'
+            ], 404);
+        }
+    } catch (\Throwable $th) {
+
+        return response()->json([
+            'status' => false,
+            'message' => $th->getMessage()
+        ], 500);
+    }
+}
     public function getAllServices()
     {
         // Fetch all services from the database
@@ -374,6 +405,40 @@ public function UpdateUserLocation(Request $request, $location_id)
         ], 200);
 
     } catch (\Throwable $th) {
+        return response()->json([
+            'status' => false,
+            'message' => $th->getMessage()
+        ], 500);
+    }
+}
+
+
+public function DestroyUserLocation(Request $request, $id)
+{
+    try {
+        // Retrieve the authenticated user
+        $user = auth()->user();
+
+        // Find the location by ID and ensure it belongs to the authenticated user
+        $location = $user->getUserAddress()->find($id);
+
+        if ($location) {
+            // Delete the location
+            $location->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Location deleted successfully'
+            ], 200);
+        } else {
+            // Location not found or does not belong to the user
+            return response()->json([
+                'status' => false,
+                'message' => 'Location not found or does not belong to the user'
+            ], 404);
+        }
+    } catch (\Throwable $th) {
+        // Catch any other exceptions and return a server error response
         return response()->json([
             'status' => false,
             'message' => $th->getMessage()
