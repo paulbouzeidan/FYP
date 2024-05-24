@@ -43,7 +43,7 @@ Route::group([
 
     Route::post('/YallaDoneSend',[sendEmail::class,'YallaDoneSend']);
 
-    Route::delete('/UpdateUserLocation/{id}', [UserController::class, 'DestroyUserLocation']);
+    Route::delete('/DestroyUserLocation/{id}', [UserController::class, 'DestroyUserLocation']);
 
     Route::delete('/DestroyUser', [UserController::class, 'DestroyUser']);
 
