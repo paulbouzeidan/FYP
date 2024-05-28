@@ -83,7 +83,7 @@ class UserController extends Controller
             Otp::where('user_id', $id)->delete();
 
             // Generate a new OTP
-            $otp = Str::random(6);
+            $otp = mt_rand(100000, 999999);
 
             // Set OTP expiration time (e.g., 1 minute)
             $expiresAt = now()->addMinutes(1);
