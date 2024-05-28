@@ -153,6 +153,12 @@ class UserController extends Controller
             // Delete the OTP record
             $otpRecord->delete();
 
+
+            $mailData = $user->user_name;
+                $email =$user->email;
+                // Send the email
+                Mail::to($email)->send(new YallaDoneMail($mailData));
+
             return response()->json([
                 'status' => true,
                 'message' => 'User verified successfully'
