@@ -45,6 +45,7 @@ class users extends Authenticatable
         'phone_number',
         'email',
         'password',
+        'is_verified'
 
     ];
 

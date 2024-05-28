@@ -24,6 +24,8 @@ Route::post('/auth/login', [UserController::class, 'loginUser']);
 Route::get('/getAllServices', [UserController::class, 'getAllServices']);
 Route::get('/getNews', [NewsController::class, 'getNews']);
 
+Route::delete('/unverified-users', [UserController::class, 'destroyUnverifiedUser']);
+
 Route::group([
     "middleware" => ["auth:sanctum"]
 ],function(){
@@ -46,6 +48,11 @@ Route::group([
     Route::delete('/DestroyUserLocation/{id}', [UserController::class, 'DestroyUserLocation']);
 
     Route::delete('/DestroyUser', [UserController::class, 'DestroyUser']);
+
+
+    Route::post('/generate-otp', [UserController::class, 'generateOtp']);
+
+    Route::post('/verify-otp/{otp}', [UserController::class, 'verifyOtp']);
 
 
 });

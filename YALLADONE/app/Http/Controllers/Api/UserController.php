@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\address;
+use App\Models\Otp;
 use App\Models\users;
 use App\Models\services;
 use Illuminate\Http\Request;
@@ -55,6 +56,127 @@ class UserController extends Controller
                 'status' => true,
                 'message' => 'User Created Successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function generateOtp(Request $request)
+    {
+        try {
+            // Get authenticated user
+            $user = auth()->user();
+            $id = $user->Users_id;
+            $email = $user->email;
+
+            // Check for existing OTP and delete it if found
+            Otp::where('user_id', $id)->delete();
+
+            // Generate a new OTP
+            $otp = Str::random(6);
+
+            // Set OTP expiration time (e.g., 1 minute)
+            $expiresAt = now()->addMinutes(1);
+
+            // Store the new OTP in the database
+            Otp::create([
+                'user_id' => $id,
+                'email' => $email,
+                'otp' => $otp,
+                'expires_at' => $expiresAt,
+            ]);
+
+            // Send OTP via email
+            Mail::raw("Your OTP is: $otp", function($message) use ($user) {
+                $message->to($user->email)
+                        ->subject('OTP Verification');
+            });
+
+            return response()->json([
+                'status' => true,
+                'message' => 'OTP generated and sent successfully',
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function verifyOtp(Request $request, $otp)
+    {
+        try {
+            // Get authenticated user
+            $user = auth()->user();
+
+            // Fetch the OTP record
+            $otpRecord = Otp::where('email', $user->email)
+                            ->where('otp', $otp)
+                            ->first();
+
+            // Check if OTP record exists
+            if (!$otpRecord) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'OTP is invalid'
+                ], 401);
+            }
+
+            // Check if OTP has expired
+            if ($otpRecord->expires_at->isPast()) {
+                // Delete the user
+                $user->delete();
+
+                // Delete the OTP record
+                $otpRecord->delete();
+
+                return response()->json([
+                    'status' => false,
+                    'message' => 'OTP has expired. User account deleted.'
+                ], 401);
+            }
+
+            // Update user's verification status
+            $user->update([
+                'is_verified' => now()
+            ]);
+
+            // Delete the OTP record
+            $otpRecord->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'User verified successfully'
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function destroyUnverifiedUser()
+    {
+        try {
+            // Delete users where is_verified is null
+            $deletedUsers = users::whereNull('is_verified')->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Unverified users deleted successfully',
+                'deleted_count' => $deletedUsers,
             ], 200);
 
         } catch (\Throwable $th) {
