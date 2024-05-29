@@ -9,8 +9,15 @@ class user_points extends Model
 {
     use HasFactory;
 
-   
+
     public function getUser(){
         return $this->belongsTo(users::class,'user_id','id');
     }
+
+    protected $fillable = [
+
+        'points'
+    ];
+
+
 }

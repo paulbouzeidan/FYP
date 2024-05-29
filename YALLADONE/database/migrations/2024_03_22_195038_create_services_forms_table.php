@@ -18,13 +18,13 @@ return new class extends Migration
             $table->foreignId('user_id')->references('Users_id')->on('users')->onDelete('cascade');
             $table->foreignId('Service_id')->references('service_id')->on('services')->onDelete('cascade');
 
-            $table->datetime('service_date')->nullable();
+            $table->datetime('service_date');
 
-            $table->string('user_name')->nullable();
-            $table->string('user_lastname')->nullable();
-            $table->string('email')->nullable();
-            $table->integer('phone_number')->nullable();
-            $table->string('location')->nullable();
+            $table->string('user_name');
+            $table->string('user_lastname');
+            $table->string('email');
+            $table->integer('phone_number');
+            $table->string('location');
 
 
         });

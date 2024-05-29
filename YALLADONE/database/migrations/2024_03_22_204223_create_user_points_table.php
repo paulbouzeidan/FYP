@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreignId('user_id')->references('Users_id')->on('users')->onDelete('cascade');
-            $table->integer('points')->nullable()->default(0);
+            $table->integer('points')->default(0);
         });
     }
 

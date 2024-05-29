@@ -17,11 +17,11 @@ return new class extends Migration
 
             $table->foreignId('user_id')->references('Users_id')->on('users')->onDelete('cascade');
 
-            $table->string('type')->nullable();
+            $table->string('type');
 
             $table->string('card_number')->nullable()->unique();
             $table->string('cardholder_name')->nullable();
-            $table->date('valid_thru')->nullable(); 
+            $table->date('valid_thru')->nullable();
             $table->integer('cvv')->nullable();
 
 

@@ -34,7 +34,7 @@ class UserController extends Controller
                 'user_name' => 'required',
                 'user_lastname'=>'required',
                 'birthday'=>'required',
-                'phone_number'=>'required',
+                'phone_number' => 'required|unique:users,phone_number',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required'
             ]);
@@ -269,8 +269,8 @@ class UserController extends Controller
             'user_name' => 'required',
             'user_lastname'=>'required',
             'birthday'=>'required',
-            'phone_number'=>'required',
-            'email' => 'required|email|'.$user->id,
+            'phone_number' => 'required|unique:users,phone_number,' . $user->id,
+            'email' => 'required|email|unique:users,email,' . $user->id,
         ]);
 
         if($validateUser->fails()){

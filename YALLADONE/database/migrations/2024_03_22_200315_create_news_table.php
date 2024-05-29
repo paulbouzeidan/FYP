@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('news', function (Blueprint $table) {
             $table->id('news_id');
             $table->timestamps();
-            $table->string('news_description')->nullable();
-            $table->timestamp('news_date')->nullable();
-            $table->string('Title')->nullable();
+            $table->string('news_description');
+            $table->timestamp('news_date');
+            $table->string('Title');
 
         });
     }
