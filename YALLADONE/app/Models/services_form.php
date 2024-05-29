@@ -29,7 +29,8 @@ class services_form extends Model
             'user_lastname',
             'email',
             'phone_number',
-            'location'
+            'location',
+            'additional_info'
 
 
     ];

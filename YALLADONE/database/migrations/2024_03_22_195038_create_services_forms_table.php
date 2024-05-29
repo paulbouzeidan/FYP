@@ -25,6 +25,8 @@ return new class extends Migration
             $table->string('email');
             $table->integer('phone_number');
             $table->string('location');
+            $table->string('additional_info')->nullable();
+
 
 
         });
