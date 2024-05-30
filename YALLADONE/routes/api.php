@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\sendEmail;
+use App\Http\Controllers\UserServiceForm;
 
 
 /*
@@ -53,6 +54,14 @@ Route::group([
     Route::post('/generate-otp', [UserController::class, 'generateOtp']);
 
     Route::post('/verify-otp/{otp}', [UserController::class, 'verifyOtp']);
+
+
+    Route::post('StoreUserServiceForm', [UserServiceForm::class, 'StoreUserServiceForm']);
+
+    Route::post('storePayment', [UserServiceForm::class, 'storePayment']);
+
+    Route::post('createPaymentIntent', [UserServiceForm::class, 'createPaymentIntent']);
+
 
 
 });
