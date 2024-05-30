@@ -19,10 +19,9 @@ return new class extends Migration
 
             $table->string('type');
 
-            $table->string('card_number')->nullable()->unique();
-            $table->string('cardholder_name')->nullable();
-            $table->date('valid_thru')->nullable();
-            $table->integer('cvv')->nullable();
+            $table->string('service_name');
+            $table->integer('price');
+
 
 
         });

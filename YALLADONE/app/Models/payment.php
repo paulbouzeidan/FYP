@@ -9,6 +9,8 @@ class payment extends Model
 {
     use HasFactory;
     protected $primaryKey ='payment_id';
+
+
     public function getOrdersPayment(){
         return $this->hasOne(orders::class);
     }
@@ -17,12 +19,11 @@ class payment extends Model
 
         'user_id',
         'type',
-        'card_number',
-        'cardholder_name',
-        'valid_thru',
-        'cvv'
+        'service_name',
+        'price'
 
-   
+
+
 
     ];
 
