@@ -68,7 +68,7 @@ Route::group([
 
 
 
-
+    Route::get('getUserPoints', [UserServiceForm::class, 'getUserPoints']);
 
 });
 
