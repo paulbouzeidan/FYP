@@ -14,6 +14,30 @@ class services extends Model
     }
 
 
+    public function getCarServices()
+    {
+        return $this->where('category', 'Car')->get();
+    }
+
+
+    public function getTransportationServices()
+    {
+        return $this->where('category', 'Transportation')->get();
+    }
+
+
+    public function getPaperworkServices()
+    {
+        return $this->where('category', 'Paperwork')->get();
+    }
+
+
+    public function getDeliveryServices()
+    {
+        return $this->where('category', 'Delivery')->get();
+    }
+
+
     protected $fillable = [
 
         'image',

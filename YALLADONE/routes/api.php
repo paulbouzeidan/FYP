@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\sendEmail;
 use App\Http\Controllers\UserServiceForm;
-
+use App\Http\Controllers\ServiceCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +26,13 @@ Route::get('/getAllServices', [UserController::class, 'getAllServices']);
 Route::get('/getNews', [NewsController::class, 'getNews']);
 
 Route::delete('/unverified-users', [UserController::class, 'destroyUnverifiedUser']);
+
+
+
+Route::get('/car-services', [ServiceCategoryController::class, 'getCarServices']);
+Route::get('/transportation-services', [ServiceCategoryController::class, 'getTransportationServices']);
+Route::get('/paperwork-services', [ServiceCategoryController::class, 'getPaperworkServices']);
+Route::get('/delivery-services', [ServiceCategoryController::class, 'getDeliveryServices']);
 
 Route::group([
     "middleware" => ["auth:sanctum"]
