@@ -11,12 +11,13 @@ class user_points extends Model
 
 
     public function getUser(){
-        return $this->belongsTo(users::class,'user_id','id');
+        return $this->belongsTo(users::class, 'user_id', 'Users_id');
     }
 
     protected $fillable = [
 
-        'points'
+        'points',
+        'user_id'
     ];
 
 

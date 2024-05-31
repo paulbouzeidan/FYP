@@ -61,8 +61,11 @@ Route::group([
     Route::post('storePayment', [UserServiceForm::class, 'storePayment']);
 
     Route::post('createPaymentIntent', [UserServiceForm::class, 'createPaymentIntent']);
-    
+
     Route::post('storeOrder', [UserServiceForm::class, 'storeOrder']);
+
+    Route::post('yallacoinPay', [UserServiceForm::class, 'yallacoinPay']);
+
 
 
 

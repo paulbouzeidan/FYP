@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\services_form;
 use App\Models\payment;
 use App\Models\orders;
+use App\Models\user_points;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -86,105 +87,134 @@ class UserServiceForm extends Controller
     }
 
 
+    public function GetPoints($service_id, $user = null)
+    {
+        try {
+            // Ensure the user is authenticated
+            if (!$user) {
+                $user = auth()->user();
+            }
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized',
+                ], 401);
+            }
+
+            // Find the service by ID
+            $service = services::find($service_id);
+            if (!$service) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Service not found',
+                ], 404);
+            }
+
+            // Calculate points based on service price
+            $amount = $service->price;
+            $points = $amount / 10;
+
+            // Retrieve the user's points record and update it
+            $userPoints = $user->getUserPoints()->first();
+            if ($userPoints) {
+                $userPoints->update([
+                    'points' => $userPoints->points +$points,
+                ]);
+            } else {
+                // If the user has no points record, create one
+                $userPoints = user_points::create([
+                    'user_id' => $user->Users_id,
+                    'points' => $points,
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Points updated successfully',
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
 
     //function for storing the paymnet
 
     public function storePayment(Request $request)
-{
-    // Validate the request data
-    $validator = Validator::make($request->all(), [
-        'type' => 'required',
-        'service_id' => 'required|exists:services,service_id',
-
-    ]);
-
-
-
-    if ($validator->fails()) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Validation errors',
-            'errors' => $validator->errors()
-        ], 422);
-    }
-
-    $user =auth()->user();
-
-    if (!$user) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Unauthorized'
-        ], 401);
-    }
-
-    $service = services::find($request->service_id);
-    $amount = $service->price ;
-    $name=$service->service_name;
-    try {
-        $payment = new payment();
-        $payment->user_id = $user->Users_id;
-        $payment->type = $request->input('type');
-        $payment->service_name =  $name;
-        $payment->price =  $amount;
-        $payment->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Payment created successfully',
-            'data' => $payment
-        ], 201);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Something went wrong',
-            'error' => $e->getMessage()
-        ], 500);
-    }
-}
-
-public function createPaymentIntent(Request $request)
-    {
-        // Validate the incoming request
-        $request->validate([
-            'service_id' => 'required|exists:services,service_id',
-        ]);
-
-        // Authenticate user
-        $user = auth()->user();
-
-        if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        // Retrieve service details
-        $service = services::find($request->service_id);
-        $amount = $service->price * 100; // Amount in cents
-
-        // Set Stripe secret key
-        Stripe::setApiKey(config('stripe.secret'));
-
-        // Create a PaymentIntent
-        $paymentIntent = PaymentIntent::create([
-            'amount' => $amount,
-            'currency' => 'usd',
-            'metadata' => [
-                'user_id' => $user->user_id,
-                'service_id' => $service->service_id,
-            ],
-        ]);
-
-        return response()->json([
-            'clientSecret' => $paymentIntent->client_secret,
-        ]);
-    }
-
-    public function storeOrder(Request $request)
     {
         // Validate the request data
         $validator = Validator::make($request->all(), [
-            'form_id' => 'required|exists:services_forms,form_id',
-            'payment_id' => 'required|exists:payments,payment_id'
+            'type' => 'required',
+            'service_id' => 'required|exists:services,service_id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user = auth()->user();
+
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $service = services::find($request->service_id);
+        $amount = $service->price;
+        $name = $service->service_name;
+
+        try {
+            $payment = new payment();
+            $payment->user_id = $user->Users_id;
+            $payment->type = $request->input('type');
+            $payment->service_name = $name;
+            $payment->price = $amount;
+            $payment->save();
+
+
+            if($request->type !== "yallacoin"){
+                $pointsResponse = $this->GetPoints($request->service_id, $user);
+
+                if ($pointsResponse->status() != 200) {
+                    // Handle the case where points update failed
+                    return $pointsResponse;
+                }
+            }
+
+
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment created successfully',
+                'data' => $payment
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function yallacoinPay(Request $request)
+{
+    try {
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'service_id' => 'required|exists:services,service_id',
         ]);
 
         if ($validator->fails()) {
@@ -203,6 +233,86 @@ public function createPaymentIntent(Request $request)
                 'message' => 'Unauthorized'
             ], 401);
         }
+
+        $service = services::find($request->service_id);
+        if (!$service) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Service not found',
+            ], 404);
+        }
+
+        // Calculate points based on service price
+        $amount = $service->price;
+
+        $userPoints = $user->getUserPoints()->first();
+
+        if (!$userPoints) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User has no points record',
+            ], 404);
+        }
+
+        $points = $userPoints->points;
+
+        if ($points < $amount) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Insufficient points',
+            ], 400);
+        }
+
+        $total = $points - $amount;
+
+        // Update the user's points
+        $userPoints->update([
+            'points' => $total,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payment created successfully',
+            'amount' => $amount,
+        ], 201);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Something went wrong',
+            'error' => $th->getMessage()
+        ], 500);
+    }
+}
+
+
+    public function storeOrder(Request $request)
+    {
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'form_id' => 'required|exists:services_forms,form_id',
+            'payment_id' => 'required|exists:payments,payment_id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+
+
+
+
+
 
         try {
             // Create the order
