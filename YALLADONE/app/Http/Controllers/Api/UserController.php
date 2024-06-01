@@ -658,5 +658,25 @@ public function addFavService(Request $request)
     }
 }
 
+public function EmergencyService()
+{
+    try {
+        // Retrieve emergency services
+        $emergencyServices = services::where('isEmergency', true)->get();
+
+        return response()->json(
+
+           $emergencyServices
+        , 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'An error occurred while processing your request',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
+
 
 }

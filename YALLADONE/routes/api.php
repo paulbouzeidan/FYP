@@ -24,6 +24,7 @@ Route::post('/auth/login', [UserController::class, 'loginUser']);
 
 Route::get('/getAllServices', [UserController::class, 'getAllServices']);
 Route::get('/getNews', [NewsController::class, 'getNews']);
+Route::get('/EmergencyService', [UserController::class, 'EmergencyService']);
 
 Route::delete('/unverified-users', [UserController::class, 'destroyUnverifiedUser']);
 
