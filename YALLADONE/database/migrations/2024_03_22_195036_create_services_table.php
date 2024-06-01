@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('service_name')->unique();
             $table->string('service_description');
             $table->boolean('isEmergency')->default(false);
-            $table->boolean('IsFav')->default(false);
+
 
         });
     }

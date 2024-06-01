@@ -46,7 +46,7 @@ class services extends Model
         'service_name',
         'service_description',
         'isEmergency',
-        'IsFav',
+      
 
     ];
 }
