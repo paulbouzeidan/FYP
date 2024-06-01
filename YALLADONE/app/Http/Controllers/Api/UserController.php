@@ -16,6 +16,7 @@ use App\Models\user_points;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Mail\YallaDoneMail;
+use App\Models\FavService;
 
 class UserController extends Controller
 {
@@ -607,6 +608,55 @@ public function getOrderHistory()
     }
 }
 
+
+public function addFavService(Request $request)
+{
+    try {
+        // Validate the incoming request data
+        $request->validate([
+            'service_id' => 'required|exists:services,service_id',
+        ]);
+
+        // Get the authenticated user
+        $user = auth()->user();
+
+        // Find the existing FavService
+        $existingFavService = FavService::where('user_id', $user->Users_id)
+            ->where('service_idF', $request->service_id)
+            ->first();
+
+        // Check if the existing FavService exists
+        if ($existingFavService) {
+            // Toggle the IsFav status
+            $existingFavService->update(['IsFav' => !$existingFavService->IsFav]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Favorite service updated successfully',
+                'data' => $existingFavService
+            ], 200);
+        } else {
+            // If it doesn't exist, create a new fav service
+            $favService = FavService::create([
+                'user_id' => $user->Users_id,
+                'service_idF' => $request->service_id,
+                'IsFav' => true
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Favorite service created successfully',
+                'data' => $favService
+            ], 201);
+        }
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'An error occurred while processing your request',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
 
 
 }

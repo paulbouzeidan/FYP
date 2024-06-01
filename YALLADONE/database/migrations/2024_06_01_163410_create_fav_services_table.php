@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('fav_services', function (Blueprint $table) {
-            $table->id();
+            $table->id('fav_service_id');
             $table->foreignId('user_id')->references('Users_id')->on('users')->onDelete('cascade');
-            $table->foreignId('service_idF')->references('service_id')->on('users')->onDelete('cascade');
+            $table->foreignId('service_idF')->references('service_id')->on('services')->onDelete('cascade');
             $table->boolean('IsFav')->default(false);
             $table->timestamps();
 

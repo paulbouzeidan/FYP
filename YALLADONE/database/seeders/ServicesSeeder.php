@@ -21,7 +21,7 @@ class ServicesSeeder extends Seeder
                 'category' => "Car",
                 'price' => 50,
                 'isEmergency' => false,
-                'isFav' => false,
+                
             ],
             [
                 'image' => '../assets/images/service-image.png',
@@ -30,7 +30,7 @@ class ServicesSeeder extends Seeder
                 'category' => "Car",
                 'price' => 20,
                 'isEmergency' => false,
-                'isFav' => false,
+
             ],
             [
                 'image' => '../assets/images/service-image.png',
@@ -39,7 +39,7 @@ class ServicesSeeder extends Seeder
                 'category' => "Transportation",
                 'price' => 20,
                 'isEmergency' => false,
-                'isFav' => false,
+
             ],
             [
                 'image' => '../assets/images/service-image.png',
@@ -48,7 +48,7 @@ class ServicesSeeder extends Seeder
                 'category' => "Transportation",
                 'price' => 20,
                 'isEmergency' => false,
-                'isFav' => false,
+
             ],
             [
                 'image' => '../assets/images/service-image.png',
@@ -57,7 +57,7 @@ class ServicesSeeder extends Seeder
                 'category' => "Paperwork",
                 'price' => 20,
                 'isEmergency' => false,
-                'isFav' => false,
+
             ],
             [
                 'image' => '../assets/images/service-image.png',
@@ -66,7 +66,7 @@ class ServicesSeeder extends Seeder
                 'category' => "Paperwork",
                 'price' => 35,
                 'isEmergency' => false,
-                'isFav' => false,
+
             ],
             [
                 'image' => '../assets/images/service-image.png',
@@ -75,7 +75,7 @@ class ServicesSeeder extends Seeder
                 'category' => "Delivery",
                 'price' => 20,
                 'isEmergency' => false,
-                'isFav' => false,
+
             ],
             [
                 'image' => '../assets/images/service-image.png',
@@ -84,7 +84,7 @@ class ServicesSeeder extends Seeder
                 'category' => "Delivery",
                 'price' => 30,
                 'isEmergency' => false,
-                'isFav' => false,
+
             ],
         ];
 

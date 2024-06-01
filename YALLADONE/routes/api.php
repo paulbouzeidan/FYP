@@ -79,6 +79,9 @@ Route::group([
 
     Route::get('getOrderHistory', [UserController::class, 'getOrderHistory']);
 
+    Route::post('addFavService', [UserController::class, 'addFavService']);
+
+
 });
 
 

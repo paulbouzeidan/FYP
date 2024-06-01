@@ -38,6 +38,14 @@ class services extends Model
     }
 
 
+
+    // Define the relationship with the FavServices model
+    public function favServices()
+    {
+        return $this->hasMany(FavService::class, 'service_idF', 'service_id');
+    }
+
+
     protected $fillable = [
 
         'image',
@@ -46,7 +54,8 @@ class services extends Model
         'service_name',
         'service_description',
         'isEmergency',
-      
+        ''
+
 
     ];
 }
