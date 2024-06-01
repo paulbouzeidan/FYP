@@ -77,6 +77,8 @@ Route::group([
 
     Route::get('getUserPoints', [UserServiceForm::class, 'getUserPoints']);
 
+    Route::get('getOrderHistory', [UserController::class, 'getOrderHistory']);
+
 });
 
 

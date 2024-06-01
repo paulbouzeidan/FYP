@@ -589,7 +589,23 @@ public function DestroyUserLocation(Request $request, $id)
     }
 }
 
+public function getOrderHistory()
+{
+    try {
+        $user = auth()->user();
 
+        $orderHistory = $user->getUserOrders()->with(['payment', 'service_form'])->get();
+
+
+        return response()->json($orderHistory, 200);
+
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => false,
+            'message' => $th->getMessage()
+        ], 500);
+    }
+}
 
 
 
