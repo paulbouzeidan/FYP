@@ -664,7 +664,7 @@ public function getFavService(){
         $user = auth()->user();
 
 
-        $favServices = $user->favServices()->with('service')->get();
+        $favServices = $user->favServices()->where('IsFav', true)->with('service')->get();
 
         return response()->json($favServices, 200);
 
