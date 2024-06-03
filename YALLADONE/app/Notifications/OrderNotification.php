@@ -16,11 +16,11 @@ class OrderNotification extends Notification
      */
 
      public $serviceinfo;
-     public $payment;
-    public function __construct($serviceinfo, $payment)
+     public $paymenttype;
+    public function __construct($serviceinfo, $paymenttype)
     {
         $this->serviceinfo = $serviceinfo;
-        $this->payment = $payment;
+        $this->paymenttype = $paymenttype;
     }
 
     /**
@@ -39,7 +39,7 @@ class OrderNotification extends Notification
 
 
             'service info' => $this->serviceinfo,
-            'payment type'=> $this->payment,
+            'payment type'=> $this->paymenttype,
         ];
     }
 

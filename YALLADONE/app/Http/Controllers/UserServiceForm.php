@@ -195,9 +195,9 @@ class UserServiceForm extends Controller
                 $amount, $name
             ];
 
-            $payment=$payment->type;
+            $paymenttype=$payment->type;
 
-            $user->notify(new \App\Notifications\OrderNotification($serviceinfo,$payment));
+            $user->notify(new \App\Notifications\OrderNotification($serviceinfo,$paymenttype));
 
             return response()->json([
                 'success' => true,
