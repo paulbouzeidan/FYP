@@ -21,10 +21,6 @@ class users extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(user_points::class, 'user_id', 'Users_id');
     }
 
-    public function getUserNotifications()
-    {
-        return $this->hasMany(notifications::class);
-    }
 
     public function getUserOrders()
     {

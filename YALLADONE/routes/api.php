@@ -82,6 +82,16 @@ Route::group([
 
     Route::post('addFavService', [UserController::class, 'addFavService']);
 
+    Route::get('getUserNotification', [UserServiceForm::class, 'getUserNotification']);
+
+    Route::get('markAsRead/{id}', [UserServiceForm::class, 'markAsRead']);
+    
+    Route::get('DestroyUserNotifiation/{id}', [UserServiceForm::class, 'DestroyUserNotifiation']);
+
+
+
+
+
 
 });
 

@@ -6,6 +6,7 @@ use App\Models\services_form;
 use App\Models\payment;
 use App\Models\orders;
 use App\Models\user_points;
+use App\Notifications\OrderNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -190,8 +191,13 @@ class UserServiceForm extends Controller
                     return $pointsResponse;
                 }
             }
+            $serviceinfo=[
+                $amount, $name
+            ];
 
+            $payment=$payment->type;
 
+            $user->notify(new \App\Notifications\OrderNotification($serviceinfo,$payment));
 
             return response()->json([
                 'success' => true,
@@ -324,12 +330,6 @@ public function getUserPoints()
             ], 401);
         }
 
-
-
-
-
-
-
         try {
             // Create the order
             $order = new orders([
@@ -340,6 +340,7 @@ public function getUserPoints()
             ]);
 
             $order->save();
+
 
             // Retrieve additional details using relationships
 
@@ -358,4 +359,104 @@ public function getUserPoints()
             ], 500);
         }
     }
+
+
+    public function getUserNotification(){
+        try {
+            $user = auth()->user();
+
+            $notifications = $user->notifications()->where('type', OrderNotification::class)->get();
+
+            return response()->json($notifications, 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function markAsRead($id)
+    {
+        try {
+            // Validate the notification ID
+            $validator = Validator::make(['id' => $id], [
+                'id' => 'required|uuid|exists:notifications,id',
+            ]);
+
+            // If the validation fails, return a 400 response with the validation errors
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => $validator->errors()->first(),
+                ], 400);
+            }
+
+            // Get the authenticated user
+            $user = auth()->user();
+
+            // Find the notification
+            $notification = $user->notifications()->find($id);
+
+            // If the notification exists, mark it as read
+            if ($notification) {
+                $notification->markAsRead();
+            }
+
+            // Return the notification in the response
+            return response()->json($notification, 200);
+
+        } catch (\Throwable $th) {
+            // If an error occurs, return a 500 response with the error message
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+
+    public function destroyUserNotification($id)
+    {
+        try {
+            // Validate the notification ID
+            $validator = Validator::make(['id' => $id], [
+                'id' => 'required|uuid|exists:notifications,id',
+            ]);
+
+            // If the validation fails, return a 400 response with the validation errors
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => $validator->errors()->first(),
+                ], 400);
+            }
+
+            // Get the authenticated user
+            $user = auth()->user();
+
+            // Find the notification
+            $notification = $user->notifications()->find($id);
+
+            // If the notification exists, delete it
+            if ($notification) {
+                $notification->delete();
+            }
+
+            // Return a success response
+            return response()->json([
+                'status' => true,
+                'message' => 'Notification deleted successfully'
+            ], 200);
+
+        } catch (\Throwable $th) {
+            // If an error occurs, return a 500 response with the error message
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
 }
