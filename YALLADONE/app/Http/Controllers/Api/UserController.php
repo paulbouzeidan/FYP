@@ -658,6 +658,25 @@ public function addFavService(Request $request)
     }
 }
 
+public function getFavService(){
+    try {
+
+        $user = auth()->user();
+
+
+        $favServices = $user->favServices()->with('service')->get();
+
+        return response()->json($favServices, 200);
+
+    } catch (\Throwable $th) {
+        // If an error occurs, return a 500 response with the error message
+        return response()->json([
+            'status' => false,
+            'message' => $th->getMessage(),
+        ], 500);
+    }
+}
+
 public function EmergencyService()
 {
     try {

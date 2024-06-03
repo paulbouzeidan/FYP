@@ -22,6 +22,7 @@ class users extends Authenticatable implements MustVerifyEmail
     }
 
 
+
     public function getUserOrders()
     {
         return $this->hasMany(orders::class, 'user_id', 'Users_id');
@@ -30,6 +31,11 @@ class users extends Authenticatable implements MustVerifyEmail
     public function getUserAddress()
     {
         return $this->hasMany(address::class, 'user_id', 'Users_id');
+    }
+
+    public function favServices()
+    {
+        return $this->hasMany(FavService::class, 'user_id', 'Users_id');
     }
 
 

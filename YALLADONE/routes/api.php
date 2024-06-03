@@ -81,6 +81,8 @@ Route::group([
     Route::get('getUserPoints', [UserServiceForm::class, 'getUserPoints']);
 
     Route::get('getOrderHistory', [UserController::class, 'getOrderHistory']);
+    Route::get('getFavService', [UserController::class, 'getFavService']);
+
 
     Route::post('addFavService', [UserController::class, 'addFavService']);
 

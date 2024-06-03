@@ -24,7 +24,7 @@ class FavService extends Model
     // Define the relationship with the Service model
     public function service()
     {
-        return $this->belongsTo(services::class, 'service_id', 'service_id');
+        return $this->belongsTo(services::class, 'service_idF', 'service_id');
     }
 
     // Define the relationship with the User model
