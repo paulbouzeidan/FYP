@@ -7,6 +7,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\sendEmail;
 use App\Http\Controllers\UserServiceForm;
 use App\Http\Controllers\ServiceCategoryController;
+use App\Http\Controllers\SMSController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,7 @@ use App\Http\Controllers\ServiceCategoryController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::get('/send-sms', [SMSController::class, 'sendSMS']);
 
 Route::post('/auth/register', [UserController::class, 'createUser']);
 Route::post('/auth/login', [UserController::class, 'loginUser']);
@@ -85,7 +87,7 @@ Route::group([
     Route::get('getUserNotification', [UserServiceForm::class, 'getUserNotification']);
 
     Route::get('markAsRead/{id}', [UserServiceForm::class, 'markAsRead']);
-    
+
     Route::get('DestroyUserNotifiation/{id}', [UserServiceForm::class, 'DestroyUserNotifiation']);
 
 
