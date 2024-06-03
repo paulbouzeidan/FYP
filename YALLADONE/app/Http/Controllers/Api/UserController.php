@@ -697,5 +697,43 @@ public function EmergencyService()
 }
 
 
+public function getAllServicesWithFavorites()
+{
+    try {
+        // Get the authenticated user
+        $user = auth()->user();
+
+        // Retrieve the user's favorite services where IsFav is true, with the related service details
+        $favServices = $user->favServices()->where('IsFav', true)->with('service')->get();
+
+        // Get the IDs of the favorite services
+        $favServiceIds = $favServices->pluck('service_idF')->toArray();
+
+        // Retrieve all services
+        $allServices = services::all();
+
+        // Add an additional attribute to each service indicating its favorite status
+        $allServicesWithFavorites = $allServices->map(function ($service) use ($favServiceIds) {
+            // Check if the service ID exists in the list of favorite service IDs
+            $isFavorite = in_array($service->service_id, $favServiceIds);
+            // Add the 'isFavorite' attribute to the service object
+            $service->isFavorite = $isFavorite;
+            return $service;
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $allServicesWithFavorites
+        ], 200);
+
+    } catch (\Throwable $th) {
+        // If an error occurs, return a 500 response with the error message
+        return response()->json([
+            'status' => false,
+            'message' => $th->getMessage(),
+        ], 500);
+    }
+}
+
 
 }

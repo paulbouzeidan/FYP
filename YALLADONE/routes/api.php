@@ -92,9 +92,9 @@ Route::group([
 
     Route::get('DestroyUserNotifiation/{id}', [UserServiceForm::class, 'DestroyUserNotifiation']);
 
+    Route::get('getAllServicesWithFavorites', [UserController::class, 'getAllServicesWithFavorites']);
 
-
-
+    
 
 
 });
