@@ -371,7 +371,7 @@ public function getUserPoints()
                 'user_id' => $user->Users_id,
                 'payment_id' => $request->input('payment_id'),
                 'form_id' => $request->input('form_id'),
-                'pending' => true
+                'status' => 'waiting'
             ]);
 
             $order->save();

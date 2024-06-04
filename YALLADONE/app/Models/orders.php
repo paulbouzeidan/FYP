@@ -31,6 +31,6 @@ class orders extends Model
         'user_id',
         'payment_id',
         'form_id',
-        'pending'
+        'status'
     ];
 }

@@ -16,14 +16,14 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreignId('user_id')->references('Users_id')->on('users')->onDelete('cascade');
-            
+
             $table->foreignId('Payment_id')->references('payment_id')->on('payments')->onDelete('cascade');
 
             $table->foreignId('Form_id')->references('form_id')->on('services_forms')->onDelete('cascade');
 
-          
-            $table->boolean('pending')->default(true);
-          
+
+            $table->enum('status', ['waiting', 'inprogress', 'done'])->default('waiting');
+
         });
     }
 
