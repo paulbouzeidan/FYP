@@ -27,6 +27,18 @@ class orders extends Model
     }
 
 
+    public function payments()
+    {
+        return $this->belongsTo(payment::class, 'payment_id', 'payment_id');
+    }
+
+    public function service_forms()
+    {
+        return $this->belongsTo(services_form::class, 'form_id', 'form_id');
+    }
+
+
+
     public function service()
     {
         return $this->hasOneThrough(

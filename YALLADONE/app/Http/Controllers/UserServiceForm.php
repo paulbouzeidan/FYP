@@ -370,7 +370,7 @@ public function getUserPoints()
 
             $order->save();
 
-            $order->load(['payment', 'service_form']);
+            $order->load(['payments', 'service_forms']);
 
             $info=
                 $order
