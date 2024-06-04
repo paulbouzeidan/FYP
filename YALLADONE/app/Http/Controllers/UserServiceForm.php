@@ -7,7 +7,7 @@ use App\Models\payment;
 use App\Models\orders;
 use App\Models\user_points;
 use App\Notifications\OrderNotification;
-use Illuminate\Support\Facades\Auth;
+;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
@@ -191,13 +191,7 @@ class UserServiceForm extends Controller
                     return $pointsResponse;
                 }
             }
-            $serviceinfo=[
-                $amount, $name
-            ];
 
-            $paymenttype=$payment->type;
-
-            $user->notify(new \App\Notifications\OrderNotification($serviceinfo,$paymenttype));
 
             return response()->json([
                 'success' => true,
@@ -371,11 +365,20 @@ public function getUserPoints()
                 'user_id' => $user->Users_id,
                 'payment_id' => $request->input('payment_id'),
                 'form_id' => $request->input('form_id'),
-                'status' => 'waiting'
+                'status' => 'waiting',
             ]);
 
             $order->save();
 
+            $order->load(['payment', 'service_form']);
+
+            $info=
+                $order
+            ;
+
+
+
+            $user->notify(new \App\Notifications\OrderNotification($info));
 
             // Retrieve additional details using relationships
 

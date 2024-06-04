@@ -15,12 +15,12 @@ class OrderNotification extends Notification
      * Create a new notification instance.
      */
 
-     public $serviceinfo;
-     public $paymenttype;
-    public function __construct($serviceinfo, $paymenttype)
+     public $info;
+
+    public function __construct($info)
     {
-        $this->serviceinfo = $serviceinfo;
-        $this->paymenttype = $paymenttype;
+        $this->info = $info;
+
     }
 
     /**
@@ -38,8 +38,8 @@ class OrderNotification extends Notification
 
 
 
-            'service info' => $this->serviceinfo,
-            'payment type'=> $this->paymenttype,
+           $this->info,
+
         ];
     }
 

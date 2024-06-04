@@ -27,6 +27,19 @@ class orders extends Model
     }
 
 
+    public function service()
+    {
+        return $this->hasOneThrough(
+            services::class,
+            services_form::class,
+            'form_id', // Foreign key on services_form table
+            'service_id', // Foreign key on services table
+            'Form_id', // Local key on orders table
+            'service_id' // Local key on services_form table
+        );
+    }
+
+
     protected $fillable = [
         'user_id',
         'payment_id',

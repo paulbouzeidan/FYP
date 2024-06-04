@@ -18,6 +18,8 @@ use Illuminate\Support\Str;
 use App\Mail\YallaDoneMail;
 use App\Models\FavService;
 
+use App\Notifications\SignupNotification;
+
 class UserController extends Controller
 {
     /**
@@ -65,6 +67,15 @@ class UserController extends Controller
                 'points' => "0",
 
             ]);
+
+            $info=
+           $user
+
+        ;
+
+
+
+        $user->notify(new \App\Notifications\SignupNotification($info));
 
 
 
@@ -595,7 +606,7 @@ public function getOrderHistory()
     try {
         $user = auth()->user();
 
-        $orderHistory = $user->getUserOrders()->with(['payment', 'service_form'])->get();
+        $orderHistory = $user->getUserOrders()->with(['payment', 'service_form','service'])->get();
 
 
         return response()->json($orderHistory, 200);

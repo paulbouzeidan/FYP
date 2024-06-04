@@ -19,6 +19,12 @@ class services_form extends Model
 
     }
 
+    public function service()
+    {
+        return $this->belongsTo(services::class, 'service_id', 'service_id');
+    }
+
+
 
     protected $fillable = [
 
