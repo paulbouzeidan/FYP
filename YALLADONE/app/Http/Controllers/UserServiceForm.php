@@ -214,6 +214,41 @@ class UserServiceForm extends Controller
         }
     }
 
+    public function createPaymentIntent(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'service_id' => 'required|exists:services,service_id',
+        ]);
+
+        // Authenticate user
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        // Retrieve service details
+        $service = services::find($request->service_id);
+        $amount = $service->price * 100; // Amount in cents
+
+        // Set Stripe secret key
+        Stripe::setApiKey(config('stripe.secret'));
+
+        // Create a PaymentIntent
+        $paymentIntent = PaymentIntent::create([
+            'amount' => $amount,
+            'currency' => 'usd',
+            'metadata' => [
+                'user_id' => $user->user_id,
+                'service_id' => $service->service_id,
+            ],
+        ]);
+
+        return response()->json([
+            'clientSecret' => $paymentIntent->client_secret,
+        ]);
+    }
 
     public function yallacoinPay(Request $request)
 {
