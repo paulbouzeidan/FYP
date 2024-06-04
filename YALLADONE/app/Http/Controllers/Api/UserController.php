@@ -68,13 +68,8 @@ class UserController extends Controller
 
             ]);
 
-            $info=
-           $user
-
-        ;
-
-
-
+            $info=$user;
+            
         $user->notify(new \App\Notifications\SignupNotification($info));
 
 

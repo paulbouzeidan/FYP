@@ -30,7 +30,7 @@ Route::get('/EmergencyService', [UserController::class, 'EmergencyService']);
 
 Route::delete('/unverified-users', [UserController::class, 'destroyUnverifiedUser']);
 
-
+Route::post('/news', [NewsController::class, 'storeNews']);
 
 Route::get('/car-services', [ServiceCategoryController::class, 'getCarServices']);
 Route::get('/transportation-services', [ServiceCategoryController::class, 'getTransportationServices']);
@@ -94,7 +94,7 @@ Route::group([
 
     Route::get('getAllServicesWithFavorites', [UserController::class, 'getAllServicesWithFavorites']);
 
-    
+
 
 
 });
