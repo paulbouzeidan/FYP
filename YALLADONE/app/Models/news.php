@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class news extends Model
 {
     use HasFactory;
@@ -14,7 +15,8 @@ class news extends Model
 
         'news_description',
         'news_date',
-        'Title'
+        'Title',
+        'image_path'
 
     ];
 

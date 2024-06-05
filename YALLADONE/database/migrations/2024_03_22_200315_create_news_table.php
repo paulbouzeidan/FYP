@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id('news_id');
             $table->timestamps();
             $table->string('news_description');
-            $table->timestamp('news_date')->nullable();
+            $table->timestamp('news_date');
             $table->string('Title');
+            $table->string('image_path');
 
         });
     }
