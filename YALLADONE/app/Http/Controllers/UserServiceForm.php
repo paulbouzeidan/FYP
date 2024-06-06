@@ -398,12 +398,12 @@ public function getUserPoints()
         }
     }
 
-
+//->where('type', OrderNotification::class) if we want to get a specefic notification
     public function getUserNotification(){
         try {
             $user = auth()->user();
 
-            $notifications = $user->notifications()->where('type', OrderNotification::class)->get();
+            $notifications = $user->notifications()->get();
 
             return response()->json($notifications, 200);
 
@@ -493,6 +493,43 @@ public function getUserPoints()
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+
+    public function DeleteUserNotification(){
+        try {
+            $user = auth()->user();
+
+            $notifications = $user->notifications();
+            $notifications->delete();
+
+            return response()->json("notifications deleted successfully !", 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function ReadAllUserNotification(){
+        try {
+            $user = auth()->user();
+
+            $notifications = $user->notifications()->get();
+
+            $notifications->markAsRead();
+
+            return response()->json($notifications, 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
             ], 500);
         }
     }

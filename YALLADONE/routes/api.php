@@ -96,8 +96,10 @@ Route::group([
 
     Route::get('getAllServicesWithFavorites', [UserController::class, 'getAllServicesWithFavorites']);
 
+    Route::post('ReadAllUserNotification', [UserServiceForm::class, 'ReadAllUserNotification']);
 
 
+    Route::delete('/DeleteUserNotification', [UserServiceForm::class, 'DeleteUserNotification']);
 
 });
 
