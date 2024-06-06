@@ -360,6 +360,30 @@ public function getUserPoints()
         }
 
         try {
+
+
+               // Retrieve the ServiceForm by form_id
+        $serviceForm = services_form::with('service')->find($request->input('form_id'));
+
+        if (!$serviceForm) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Service form not found'
+            ], 404);
+        }
+
+        // Get location name from ServiceForm
+        $locationName = $serviceForm->location;
+
+        // Find the address using the user's addresses and the location name
+        $address = $user->getUserAddress()->where('name', $locationName)->first();
+
+        if (!$address) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Address not found'
+            ], 404);
+        }
             // Create the order
             $order = new orders([
                 'user_id' => $user->Users_id,
@@ -378,8 +402,10 @@ public function getUserPoints()
             $serviceInfo = $order->service_forms->services;
 
             $info=
-                $order;
-                $serviceInfo;
+                [  "address info"=> $address,
+                "service info"=> $serviceInfo,
+                "order info"=>  $order]
+
             ;
 
 
@@ -392,7 +418,7 @@ public function getUserPoints()
             return response()->json([
                 'success' => true,
                 'message' => 'Order created successfully',
-
+                $info
             ], 201);
 
         } catch (\Exception $e) {
