@@ -372,8 +372,14 @@ public function getUserPoints()
 
             $order->load(['payments', 'service_forms']);
 
+            $order->load(['service_forms.service']);
+
+            // Extract service information
+            $serviceInfo = $order->service_forms->services;
+
             $info=
-                $order
+                $order;
+                $serviceInfo;
             ;
 
 
