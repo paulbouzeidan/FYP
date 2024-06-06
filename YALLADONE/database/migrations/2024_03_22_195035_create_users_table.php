@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('birthday');
             $table->integer('phone_number')->unique();
             $table->string('password');
+            $table->string('expo_push_token');
         });
     }
 

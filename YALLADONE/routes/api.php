@@ -8,6 +8,7 @@ use App\Http\Controllers\sendEmail;
 use App\Http\Controllers\UserServiceForm;
 use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\SMSController;
+use App\Http\Controllers\FrontendNotification;
 
 /*
 |--------------------------------------------------------------------------
@@ -100,6 +101,8 @@ Route::group([
 
 
     Route::delete('/DeleteUserNotification', [UserServiceForm::class, 'DeleteUserNotification']);
+
+    Route::post('/save-token', [FrontendNotification::class, 'saveToken']);
 
 });
 

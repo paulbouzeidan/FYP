@@ -47,7 +47,8 @@ class users extends Authenticatable implements MustVerifyEmail
         'phone_number',
         'email',
         'password',
-        'is_verified'
+        'is_verified',
+        'expo_push_token'
 
     ];
 
