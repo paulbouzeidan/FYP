@@ -92,11 +92,11 @@ Route::group([
 
     Route::get('markAsRead/{id}', [UserServiceForm::class, 'markAsRead']);
 
-    Route::get('DestroyUserNotifiation/{id}', [UserServiceForm::class, 'DestroyUserNotifiation']);
-
+    Route::delete('/DestroyUserNotifiation/{id}', [UserServiceForm::class, 'destroyUserNotification']);
+    
     Route::get('getAllServicesWithFavorites', [UserController::class, 'getAllServicesWithFavorites']);
 
-    Route::post('ReadAllUserNotification', [UserServiceForm::class, 'ReadAllUserNotification']);
+    Route::get('ReadAllUserNotification', [UserServiceForm::class, 'ReadAllUserNotification']);
 
 
     Route::delete('/DeleteUserNotification', [UserServiceForm::class, 'DeleteUserNotification']);

@@ -492,46 +492,51 @@ class UserServiceForm extends Controller
 
 
     public function destroyUserNotification($id)
-    {
-        try {
-            // Validate the notification ID
-            $validator = Validator::make(['id' => $id], [
-                'id' => 'required|uuid|exists:notifications,id',
-            ]);
+{
+    try {
+        // Validate the notification ID
+        $validator = Validator::make(['id' => $id], [
+            'id' => 'required|uuid|exists:notifications,id',
+        ]);
 
-            // If the validation fails, return a 400 response with the validation errors
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => $validator->errors()->first(),
-                ], 400);
-            }
-
-            // Get the authenticated user
-            $user = auth()->user();
-
-            // Find the notification
-            $notification = $user->notifications()->find($id);
-
-            // If the notification exists, delete it
-            if ($notification) {
-                $notification->delete();
-            }
-
-            // Return a success response
-            return response()->json([
-                'status' => true,
-                'message' => 'Notification deleted successfully'
-            ], 200);
-
-        } catch (\Throwable $th) {
-            // If an error occurs, return a 500 response with the error message
+        // If validation fails, return a 400 response with the validation errors
+        if ($validator->fails()) {
             return response()->json([
                 'status' => false,
-                'message' => $th->getMessage(),
-            ], 500);
+                'message' => $validator->errors()->first(),
+            ], 400);
         }
+
+        // Get the authenticated user
+        $user = auth()->user();
+
+        // Find the notification
+        $notification = $user->notifications()->find($id);
+
+        // If the notification exists, delete it
+        if ($notification) {
+            $notification->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'Notification deleted successfully',
+            ], 200);
+        }
+
+        // If notification does not exist, return a 404 response
+        return response()->json([
+            'status' => false,
+            'message' => 'Notification not found',
+        ], 404);
+
+    } catch (\Throwable $th) {
+        // If an error occurs, return a 500 response with the error message
+        return response()->json([
+            'status' => false,
+            'message' => $th->getMessage(),
+        ], 500);
     }
+}
+
 
 
     public function DeleteUserNotification()
@@ -553,17 +558,21 @@ class UserServiceForm extends Controller
     }
 
 
-    public function ReadAllUserNotification()
-    {
+    public function ReadAllUserNotification(){
         try {
             $user = auth()->user();
-
-            $notifications = $user->notifications()->get();
-
-            $notifications->markAsRead();
-
-            return response()->json($notifications, 200);
-
+    
+            // Retrieve only unread notifications
+            $unreadNotifications = $user->notifications()->whereNull('read_at')->get();
+    
+            // Mark unread notifications as read
+            foreach ($unreadNotifications as $notification) {
+                $notification->markAsRead();
+            }
+    
+            
+            return response()->json("notifications marked as read !", 200);
+    
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -571,5 +580,4 @@ class UserServiceForm extends Controller
             ], 500);
         }
     }
-
 }
