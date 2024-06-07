@@ -14,11 +14,10 @@ return new class extends Migration
         Schema::create('news', function (Blueprint $table) {
             $table->id('news_id');
             $table->timestamps();
-            $table->string('news_description');
-            $table->timestamp('news_date');
-            $table->string('Title');
-            $table->string('image_path');
-
+            $table->text('news_description');  
+            $table->timestamp('news_date')->useCurrent();  
+            $table->string('Title');  
+            $table->string('image_path');  
         });
     }
 
