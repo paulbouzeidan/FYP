@@ -7,6 +7,7 @@ use App\Models\payment;
 use App\Models\orders;
 use App\Models\user_points;
 use App\Notifications\OrderNotification;
+
 ;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class UserServiceForm extends Controller
         }
 
         // Step 2: Authenticate the user using the bearer token
-        $user =auth()->user();
+        $user = auth()->user();
 
         if (!$user) {
             return response()->json([
@@ -119,7 +120,7 @@ class UserServiceForm extends Controller
             $userPoints = $user->getUserPoints()->first();
             if ($userPoints) {
                 $userPoints->update([
-                    'points' => $userPoints->points +$points,
+                    'points' => $userPoints->points + $points,
                 ]);
             } else {
                 // If the user has no points record, create one
@@ -183,7 +184,7 @@ class UserServiceForm extends Controller
             $payment->save();
 
 
-            if($request->type !== "yallacoin"){
+            if ($request->type !== "yallacoin") {
                 $pointsResponse = $this->GetPoints($request->service_id, $user);
 
                 if ($pointsResponse->status() != 200) {
@@ -245,96 +246,96 @@ class UserServiceForm extends Controller
     }
 
     public function yallacoinPay(Request $request)
-{
-    try {
-        // Validate the request data
-        $validator = Validator::make($request->all(), [
-            'service_id' => 'required|exists:services,service_id',
-        ]);
+    {
+        try {
+            // Validate the request data
+            $validator = Validator::make($request->all(), [
+                'service_id' => 'required|exists:services,service_id',
+            ]);
 
-        if ($validator->fails()) {
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation errors',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $user = auth()->user();
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized'
+                ], 401);
+            }
+
+            $service = services::find($request->service_id);
+            if (!$service) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Service not found',
+                ], 404);
+            }
+
+            // Calculate points based on service price
+            $amount = $service->price;
+
+            $userPoints = $user->getUserPoints()->first();
+
+            if (!$userPoints) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User has no points record',
+                ], 404);
+            }
+
+            $points = $userPoints->points;
+
+            if ($points < $amount) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Insufficient points',
+                ], 400);
+            }
+
+            $total = $points - $amount;
+
+            // Update the user's points
+            $userPoints->update([
+                'points' => $total,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment created successfully',
+                'amount' => $amount,
+            ], 201);
+        } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
-                'message' => 'Validation errors',
-                'errors' => $validator->errors()
-            ], 422);
+                'message' => 'Something went wrong',
+                'error' => $th->getMessage()
+            ], 500);
         }
-
-        $user = auth()->user();
-
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized'
-            ], 401);
-        }
-
-        $service = services::find($request->service_id);
-        if (!$service) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Service not found',
-            ], 404);
-        }
-
-        // Calculate points based on service price
-        $amount = $service->price;
-
-        $userPoints = $user->getUserPoints()->first();
-
-        if (!$userPoints) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User has no points record',
-            ], 404);
-        }
-
-        $points = $userPoints->points;
-
-        if ($points < $amount) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Insufficient points',
-            ], 400);
-        }
-
-        $total = $points - $amount;
-
-        // Update the user's points
-        $userPoints->update([
-            'points' => $total,
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Payment created successfully',
-            'amount' => $amount,
-        ], 201);
-    } catch (\Throwable $th) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Something went wrong',
-            'error' => $th->getMessage()
-        ], 500);
     }
-}
 
-public function getUserPoints()
-{
-    try {
-        $user = auth()->user();
+    public function getUserPoints()
+    {
+        try {
+            $user = auth()->user();
 
-        $points = $user->getUserPoints;
+            $points = $user->getUserPoints;
 
-        return response()->json($points, 200);
+            return response()->json($points, 200);
 
-    } catch (\Throwable $th) {
-        return response()->json([
-            'status' => false,
-            'message' => $th->getMessage()
-        ], 500);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
     }
-}
 
     public function storeOrder(Request $request)
     {
@@ -362,28 +363,28 @@ public function getUserPoints()
         try {
 
 
-               // Retrieve the ServiceForm by form_id
-        $serviceForm = services_form::with('service')->find($request->input('form_id'));
+            // Retrieve the ServiceForm by form_id
+            $serviceForm = services_form::with('service')->find($request->input('form_id'));
 
-        if (!$serviceForm) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Service form not found'
-            ], 404);
-        }
+            if (!$serviceForm) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Service form not found'
+                ], 404);
+            }
 
-        // Get location name from ServiceForm
-        $locationName = $serviceForm->location;
+            // Get location name from ServiceForm
+            $locationName = $serviceForm->location;
 
-        // Find the address using the user's addresses and the location name
-        $address = $user->getUserAddress()->where('name', $locationName)->first();
+            // Find the address using the user's addresses and the location name
+            $address = $user->getUserAddress()->where('name', $locationName)->first();
 
-        if (!$address) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Address not found'
-            ], 404);
-        }
+            if (!$address) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Address not found'
+                ], 404);
+            }
             // Create the order
             $order = new orders([
                 'user_id' => $user->Users_id,
@@ -401,10 +402,12 @@ public function getUserPoints()
             // Extract service information
             $serviceInfo = $order->service_forms->services;
 
-            $info=
-                [  "address info"=> $address,
-                "service info"=> $serviceInfo,
-                "order info"=>  $order]
+            $info =
+                [
+                    "address_info" => $address,
+                    "service_info" => $serviceInfo,
+                    "order_info" => $order
+                ]
 
             ;
 
@@ -430,8 +433,9 @@ public function getUserPoints()
         }
     }
 
-//->where('type', OrderNotification::class) if we want to get a specefic notification
-    public function getUserNotification(){
+    //->where('type', OrderNotification::class) if we want to get a specefic notification
+    public function getUserNotification()
+    {
         try {
             $user = auth()->user();
 
@@ -530,7 +534,8 @@ public function getUserPoints()
     }
 
 
-    public function DeleteUserNotification(){
+    public function DeleteUserNotification()
+    {
         try {
             $user = auth()->user();
 
@@ -548,7 +553,8 @@ public function getUserPoints()
     }
 
 
-    public function ReadAllUserNotification(){
+    public function ReadAllUserNotification()
+    {
         try {
             $user = auth()->user();
 
