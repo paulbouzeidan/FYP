@@ -40,7 +40,7 @@ class SMSController extends Controller
         }
 
         // Send the SMS message
-        $userNumber = $user->phone_number;
+        $userNumber = '961' . $user->phone_number;
         $response = $this->vonageClient->sms()->send(
             new \Vonage\SMS\Message\SMS($userNumber, "YallaDone", 'The distance to your order is now less than 1 km, indicating that it is very close to your location.')
         );
