@@ -23,7 +23,7 @@ return new class extends Migration
 
 
             $table->enum('status', ['waiting', 'inprogress', 'done'])->default('waiting');
-
+            $table->string('isOrderMessage')->default('false');
         });
     }
 
