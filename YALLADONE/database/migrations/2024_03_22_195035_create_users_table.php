@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('is_verified')->nullable()->default(NULL);
             $table->date('birthday');
-            $table->integer('phone_number')->unique();
+            $table->bigInteger('phone_number')->unique();
             $table->string('password');
         });
     }
