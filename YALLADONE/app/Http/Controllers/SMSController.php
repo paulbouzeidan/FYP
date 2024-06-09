@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Vonage\Client;
-
+use App\Models\orders;
 class SMSController extends Controller
 {
     protected $vonageClient;

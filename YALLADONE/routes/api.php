@@ -101,7 +101,7 @@ Route::group([
 
     Route::delete('/DeleteUserNotification', [UserServiceForm::class, 'DeleteUserNotification']);
 
-
+    Route::post('/send-sms', [SMSController::class, 'sendSMS']);
 
 
 
