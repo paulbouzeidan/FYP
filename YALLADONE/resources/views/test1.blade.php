@@ -54,7 +54,7 @@
             <p>Welcome {{$mailData}},</p>
 
             <p>We're excited to have you with us. YallaDone is here to make your life easier with a wide range of on-demand services, from car maintenance to personal errands.</p>
-            <p>For any questions, our support team is here to help at support@yalladone.com.</p>
+            <p>For any questions, our support team is here to help at support@yalladone.com</p>
             <p>Thanks for joining us!</p>
         </div>
         <div class="footer">
