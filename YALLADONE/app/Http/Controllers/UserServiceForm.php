@@ -434,7 +434,7 @@ class UserServiceForm extends Controller
     }
 
     //->where('type', OrderNotification::class) if we want to get a specefic notification
-    public function getUserNotification()
+    public function getUserNotification() 
     {
         try {
             $user = auth()->user();
