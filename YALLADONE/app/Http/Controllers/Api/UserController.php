@@ -195,7 +195,7 @@ class UserController extends Controller
     }
 
 
-    public function destroyUnverifiedUser()
+    public function destroyUnverifiedUser() 
     {
         try {
             // Delete users where is_verified is null
