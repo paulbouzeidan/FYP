@@ -52,10 +52,14 @@
         </div>
         <div class="content">
             <p>Welcome {{$mailData}},</p>
-            <p>YallaDone betrahib fik w bi amselak ya hobb.</p>
+
+            <p>We're excited to have you with us. YallaDone is here to make your life easier with a wide range of on-demand services, from car maintenance to personal errands.</p>
+            <p>For any questions, our support team is here to help at support@yalladone.com.</p>
+            <p>Thanks for joining us!</p>
         </div>
         <div class="footer">
-            <h6>Thank You</h6>
+            <h5>Best,</h5>
+            <h4><b>The YallaDone Team</b></h4>
         </div>
     </div>
 </body>
