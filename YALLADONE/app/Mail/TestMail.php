@@ -18,18 +18,18 @@ class TestMail extends Mailable
      * Create a new message instance.
      */
     public $mailData;
-    public $senderEmail;
-    public function __construct($mailData,$senderEmail)
+    public $loggedInUserEmail;
+    public function __construct($mailData,$loggedInUserEmail)
     {
         $this->mailData = $mailData;
-        $this->senderEmail = $senderEmail;
+        $this->loggedInUserEmail = $loggedInUserEmail;
 
     }
 
     public function build()
     {
         return $this->view('test')
-                    ->from  ($this->senderEmail, config('app.name'))
+                    ->from  ($this->loggedInUserEmail, config('app.name'))
                     ->subject('User Feedback ')
                     ->with('mailData', $this->mailData);
     }
