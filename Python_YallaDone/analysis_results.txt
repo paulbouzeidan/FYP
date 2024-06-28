@@ -1,0 +1,15 @@
+Number of users: 2
+Average age of users: 10.5
+Best-selling service: Car Detailing
+Monthly Income: month
+2024-06    50
+Freq: M, Name: price, dtype: int64
+Daily Income: day
+2024-06-06    50
+Freq: D, Name: price, dtype: int64
+Payment Methods Count: type
+cash    1
+Name: count, dtype: int64
+Most Popular Payment Method: cash
+Most frequent city using the app: zahle
+

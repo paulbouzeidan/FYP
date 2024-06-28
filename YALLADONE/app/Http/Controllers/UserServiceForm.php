@@ -7,8 +7,8 @@ use App\Models\payment;
 use App\Models\orders;
 use App\Models\user_points;
 use App\Notifications\OrderNotification;
+use Illuminate\Support\Facades\Log;
 
-;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
@@ -211,38 +211,51 @@ class UserServiceForm extends Controller
 
     public function createPaymentIntent(Request $request)
     {
-        // Validate the incoming request
-        $request->validate([
-            'service_id' => 'required|exists:services,service_id',
-        ]);
+        try {
+            // Validate the incoming request
+            $request->validate([
+                'service_id' => 'required|exists:services,service_id',
+            ]);
 
-        // Authenticate user
-        $user = auth()->user();
+            // Authenticate user
+            $user = auth()->user();
+            if (!$user) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
 
-        if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            // Retrieve service details
+            $service = services::find($request->service_id);
+            if (!$service) {
+                return response()->json(['error' => 'Service not found'], 404);
+            }
+
+            $amount = $service->price * 100; // Amount in cents
+
+            // Set Stripe secret key
+            Stripe::setApiKey(config('stripe.secret'));
+
+            // Create a PaymentIntent
+            $paymentIntent = PaymentIntent::create([
+                'amount' => $amount,
+                'currency' => 'usd',
+                'metadata' => [
+                    'user_id' => $user->user_id,
+                    'service_id' => $service->service_id,
+                ],
+            ]);
+
+            return response()->json([
+                'clientSecret' => $paymentIntent->client_secret,
+            ]);
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            // Handle Stripe API error
+            Log::error('Stripe API error: ' . $e->getMessage());
+            return response()->json(['error' => 'Stripe API error: ' . $e->getMessage()], 500);
+        } catch (\Exception $e) {
+            // Handle general errors
+            Log::error('Internal server error: ' . $e->getMessage());
+            return response()->json(['error' => 'Internal server error: ' . $e->getMessage()], 500);
         }
-
-        // Retrieve service details
-        $service = services::find($request->service_id);
-        $amount = $service->price * 100; // Amount in cents
-
-        // Set Stripe secret key
-        Stripe::setApiKey(config('stripe.secret'));
-
-        // Create a PaymentIntent
-        $paymentIntent = PaymentIntent::create([
-            'amount' => $amount,
-            'currency' => 'usd',
-            'metadata' => [
-                'user_id' => $user->user_id,
-                'service_id' => $service->service_id,
-            ],
-        ]);
-
-        return response()->json([
-            'clientSecret' => $paymentIntent->client_secret,
-        ]);
     }
 
     public function yallacoinPay(Request $request)
@@ -434,7 +447,7 @@ class UserServiceForm extends Controller
     }
 
     //->where('type', OrderNotification::class) if we want to get a specefic notification
-    public function getUserNotification() 
+    public function getUserNotification()
     {
         try {
             $user = auth()->user();
@@ -492,50 +505,50 @@ class UserServiceForm extends Controller
 
 
     public function destroyUserNotification($id)
-{
-    try {
-        // Validate the notification ID
-        $validator = Validator::make(['id' => $id], [
-            'id' => 'required|uuid|exists:notifications,id',
-        ]);
+    {
+        try {
+            // Validate the notification ID
+            $validator = Validator::make(['id' => $id], [
+                'id' => 'required|uuid|exists:notifications,id',
+            ]);
 
-        // If validation fails, return a 400 response with the validation errors
-        if ($validator->fails()) {
+            // If validation fails, return a 400 response with the validation errors
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => $validator->errors()->first(),
+                ], 400);
+            }
+
+            // Get the authenticated user
+            $user = auth()->user();
+
+            // Find the notification
+            $notification = $user->notifications()->find($id);
+
+            // If the notification exists, delete it
+            if ($notification) {
+                $notification->delete();
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Notification deleted successfully',
+                ], 200);
+            }
+
+            // If notification does not exist, return a 404 response
             return response()->json([
                 'status' => false,
-                'message' => $validator->errors()->first(),
-            ], 400);
-        }
+                'message' => 'Notification not found',
+            ], 404);
 
-        // Get the authenticated user
-        $user = auth()->user();
-
-        // Find the notification
-        $notification = $user->notifications()->find($id);
-
-        // If the notification exists, delete it
-        if ($notification) {
-            $notification->delete();
+        } catch (\Throwable $th) {
+            // If an error occurs, return a 500 response with the error message
             return response()->json([
-                'status' => true,
-                'message' => 'Notification deleted successfully',
-            ], 200);
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
         }
-
-        // If notification does not exist, return a 404 response
-        return response()->json([
-            'status' => false,
-            'message' => 'Notification not found',
-        ], 404);
-
-    } catch (\Throwable $th) {
-        // If an error occurs, return a 500 response with the error message
-        return response()->json([
-            'status' => false,
-            'message' => $th->getMessage(),
-        ], 500);
     }
-}
 
 
 
@@ -558,21 +571,22 @@ class UserServiceForm extends Controller
     }
 
 
-    public function ReadAllUserNotification(){
+    public function ReadAllUserNotification()
+    {
         try {
             $user = auth()->user();
-    
+
             // Retrieve only unread notifications
             $unreadNotifications = $user->notifications()->whereNull('read_at')->get();
-    
+
             // Mark unread notifications as read
             foreach ($unreadNotifications as $notification) {
                 $notification->markAsRead();
             }
-    
-            
+
+
             return response()->json("notifications marked as read !", 200);
-    
+
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
